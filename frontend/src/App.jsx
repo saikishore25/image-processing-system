@@ -2,12 +2,16 @@
 import { useEffect, useState } from "react";
 
 function App() {
-
     const [message, setMessage] = useState("Loading...");
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/status")
-            .then(res => res.json())
+        fetch("http://18.60.60.34:5000/api/status")
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Backend request failed");
+                }
+                return res.json();
+            })
             .then(data => setMessage(data.message))
             .catch(err => setMessage("Backend connection failed"));
     }, []);
