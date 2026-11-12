@@ -13,7 +13,7 @@ app.use(cors({
 app.use(express.json({ limit: "1mb" }));
 
 app.get("/", (req, res) => {
-    return res.json({"message":"API Working Fine"})
+    return res.json({ "message": "API Working Fine" })
 });
 
 app.use("/api/images", imageRoutes);
