@@ -1,60 +1,87 @@
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ||
-  "http://localhost:5000/api/images";
+import axios from "axios";
 
-// Helper to handle backend responses
-const handleResponse = async (response) => {
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Request failed");
-  }
-
-  return data;
-};
-
-// STEP 1: Request pre-signed PUT URL from backend
-export const generateUploadUrl = async (file) => {
-  const response = await fetch(`${API_BASE_URL}/upload-url`, {
-    method: "POST",
+const API = axios.create({
+    baseURL: "http://localhost:5000/api/images",
     headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      fileName: file.name,
-      contentType: file.type,
-      fileSize: file.size,
-    }),
-  });
+        "Content-Type": "application/json"
+    }
+});
 
-  return handleResponse(response);
+
+// 1. Generate presigned S3 upload URL
+export const createUploadUrl = async (file) => {
+    const response = await API.post("/upload-url", {
+        fileName: file.name,
+        contentType: file.type,
+        fileSize: file.size
+    });
+
+    return response.data;
 };
 
-// STEP 2: Upload actual image directly to S3
-export const uploadToS3 = async (file, uploadUrl) => {
-  const response = await fetch(uploadUrl, {
-    method: "PUT",
-    headers: {
-      "Content-Type": file.type,
-    },
-    body: file,
-  });
 
-  if (!response.ok) {
-    throw new Error("Failed to upload image to S3");
-  }
+// 2. Upload original image directly to S3
+export const uploadImageToS3 = async (uploadUrl, file) => {
+    const response = await axios.put(uploadUrl, file, {
+        headers: {
+            "Content-Type": file.type
+        }
+    });
 
-  return true;
+    return response.data;
 };
 
-// STEP 3: Request pre-signed GET URL from backend
-export const generateDownloadUrl = async (imageId, key) => {
-  const params = new URLSearchParams({ key });
 
-  const response = await fetch(
-    `${API_BASE_URL}/${imageId}/download?${params.toString()}`
-  );
+// 3. Confirm original image upload
+export const completeUpload = async (imageId) => {
+    const response = await API.post(
+        `/${imageId}/complete-upload`
+    );
 
-  return handleResponse(response);
+    return response.data;
+};
+
+
+// 4. Start image processing
+export const processImage = async (imageId) => {
+    const response = await API.post(
+        `/${imageId}/process`
+    );
+
+    return response.data;
+};
+
+
+// 5. Get all uploaded images
+export const getAllImages = async () => {
+    const response = await API.get("/");
+
+    return response.data;
+};
+
+
+// 6. Get one image and all its variations
+export const getImageById = async (imageId) => {
+    const response = await API.get(`/${imageId}`);
+
+    return response.data;
+};
+
+
+// 7. Get download URL for a particular variation
+export const getImageDownloadUrl = async (imageId, variant) => {
+    const response = await API.get(
+        `/${imageId}/download/${variant}`
+    );
+
+    return response.data;
+};
+
+
+// 8. Delete image and all its variations
+export const deleteImage = async (imageId) => {
+    const response = await API.delete(`/${imageId}`);
+
+    return response.data;
 };

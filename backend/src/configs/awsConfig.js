@@ -1,8 +1,14 @@
 import { S3Client } from "@aws-sdk/client-s3";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
-const s3 = new S3Client({
+export const s3 = new S3Client({
     region: process.env.AWS_REGION || "ap-south-2",
 });
 
-console.log("AWS Region: ", process.env.AWS_REGION)
-export default s3;
+const client = new DynamoDBClient({
+    region: process.env.AWS_REGION || "ap-south-2"
+});
+
+export const dynamodb = DynamoDBDocumentClient.from(client);
+
