@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "http://localhost:5000/api/images",
+    baseURL: "https://1ysr4d39q5.execute-api.ap-south-2.amazonaws.com/api/images" || "http://localhost:5000/api/images",
     headers: {
         "Content-Type": "application/json"
     }
