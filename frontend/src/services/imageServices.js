@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "https://1ysr4d39q5.execute-api.ap-south-2.amazonaws.com/api/images",
+    baseURL: process.env.VITE_API_BASE_URL,
     headers: {
         "Content-Type": "application/json"
     }
