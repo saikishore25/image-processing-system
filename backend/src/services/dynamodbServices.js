@@ -7,7 +7,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { dynamodb } from "../configs/awsConfig.js";
 
-const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME;
+const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || "image_details";
 
 export const saveImage = async (image) => {
     const command = new PutCommand({

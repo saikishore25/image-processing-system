@@ -11,7 +11,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3 } from "../configs/awsConfig.js";
 
 
-const BUCKET_NAME = process.env.AWS_S3_BUCKET;
+const BUCKET_NAME = process.env.AWS_S3_BUCKET || "image-processing-system-bucket";
 
 // Generate presigned upload URL
 export const getUploadUrl = async ({ key, contentType }) => {
