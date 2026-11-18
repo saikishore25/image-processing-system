@@ -21,9 +21,11 @@ export const getUploadUrl = async ({ key, contentType }) => {
         ContentType: contentType
     });
 
-    return getSignedUrl(s3, command, {
+    const signed = getSignedUrl(s3, command, {
         expiresIn: 300
     });
+
+    return signed
 };
 
 

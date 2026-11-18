@@ -33,7 +33,9 @@ export const createImageUpload = async ({
 
     const extension = path.extname(fileName).toLowerCase();
     const originalKey = `original/${imageId}${extension}`;
-    console.log("Original Key: ", originalKey)
+
+    console.log("Original Key:", originalKey);
+
     const image = {
         imageId,
         originalName: fileName,
@@ -45,14 +47,18 @@ export const createImageUpload = async ({
         variants: {}
     };
 
+    console.log("STEP 1: Saving metadata to DynamoDB");
+
     await saveImage(image);
+
+    console.log("STEP 2: DynamoDB save successful");
 
     const uploadUrl = await getUploadUrl({
         key: originalKey,
         contentType
     });
 
-    console.log("Upload URL: ", uploadUrl)
+    console.log("STEP 3: Presigned URL generated");
 
     return {
         imageId,
